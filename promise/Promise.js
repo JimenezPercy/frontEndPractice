@@ -33,6 +33,7 @@ function resolvePromise(promise, x, resolve, reject) {
      *   3.5 If then is not a function, fulfill promise with x.
      * 4. If x is not an object or function, fulfill promise with x.
      */
+    let called;
     if (typeof x === 'object' && x !== null || typeof x === 'function') {
         //取then属性，可能会抛异常
         try {
@@ -41,8 +42,15 @@ function resolvePromise(promise, x, resolve, reject) {
             if (typeof then === 'function') {
                 //调用该函数并改变函数的this指向
                 then.call(x, y => {
-                    resolve(y);
+                    //非第一次调用直接返回
+                    if (called) return;
+                    //第一次将标识符修改为true
+                    called = true;
+                    // y为一个promise
+                    resolvePromise(promise,y,resolve,reject);
                 }, r => {
+                    if (called) return;
+                    called = true;
                     reject(r);
                 });
             } else {
@@ -113,7 +121,9 @@ class Promise {
     then(onFulfilled, onRejected) {
         //传递给then的参数不是函数的情况，成功回调直接转为返回传参，失败回调转为抛出传参
         onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : val => val;
-        onRejected=typeof onRejected=== 'function' ? onRejected : err => {throw err};
+        onRejected = typeof onRejected === 'function' ? onRejected : err => {
+            throw err
+        };
 
         let p2 = new Promise((resolve, reject) => {
             //将保存的成功的数据传递给成功回调
@@ -174,6 +184,15 @@ class Promise {
 
         return p2;
     }
+}
+
+Promise.defer = Promise.deferred = function () {
+    let dfd = {};
+    dfd.promise = new Promise((resolve, reject) => {
+        dfd.resolve = resolve;
+        dfd.reject = reject;
+    })
+    return dfd;
 }
 
 //commonJS规范，模块导出成员
