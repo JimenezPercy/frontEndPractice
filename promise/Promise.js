@@ -116,7 +116,7 @@ class Promise {
     }
 
     /**
-     * then为原型函数，根据管理状态进行判断调用哪个回调
+     * then为原型函数，根据管理状态进行判断调用哪个回d调
      * @param onFulfilled 成功时的回调
      * @param onRejected 失败时的回调
      */
@@ -202,3 +202,4 @@ Promise.defer = Promise.deferred = function () {
 }
 
 //commonJS规范，模�
+module.exports=Promise;
