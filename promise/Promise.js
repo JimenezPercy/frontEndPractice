@@ -46,7 +46,7 @@ function resolvePromise(promise, x, resolve, reject) {
                     if (called) return;
                     //第一次将标识符修改为true
                     called = true;
-                    // y为一个promise
+                    // y为一个promise，递归解析
                     resolvePromise(promise,y,resolve,reject);
                 }, r => {
                     if (called) return;
@@ -58,6 +58,8 @@ function resolvePromise(promise, x, resolve, reject) {
                 resolve(x);
             }
         } catch (e) {
+            if (called) return;
+            called = true;
             //抛异常将状态转为失败，执行失败回调
             reject(e);
         }
@@ -108,7 +110,7 @@ class Promise {
         try {
             executor(resolve, reject);
         } catch (e) {
-            reject();
+            reject(e);
         }
 
     }
@@ -184,6 +186,10 @@ class Promise {
 
         return p2;
     }
+
+    catch(callback){
+        return this.then(null,callback);
+    }
 }
 
 Promise.defer = Promise.deferred = function () {
@@ -195,5 +201,4 @@ Promise.defer = Promise.deferred = function () {
     return dfd;
 }
 
-//commonJS规范，模块导出成员
-module.exports = Promise;
+//commonJS规范，模�
