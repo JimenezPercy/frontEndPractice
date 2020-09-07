@@ -47,7 +47,7 @@ function resolvePromise(promise, x, resolve, reject) {
                     //第一次将标识符修改为true
                     called = true;
                     // y为一个promise，递归解析
-                    resolvePromise(promise,y,resolve,reject);
+                    resolvePromise(promise, y, resolve, reject);
                 }, r => {
                     if (called) return;
                     called = true;
@@ -187,8 +187,29 @@ class Promise {
         return p2;
     }
 
-    catch(callback){
-        return this.then(null,callback);
+    catch(callback) {
+        return this.then(null, callback);
+    }
+
+    finally(callback) {
+        let P = this.constructor;
+
+        return this.then(
+            v => P.resolve(callback(v)).then(() => v),
+            r => P.resolve(callback(r)).then(() => {throw r})
+        );
+    }
+
+    static resolve(value) {
+        return new Promise((resolve, reject) => {
+            resolve(value);
+        })
+    }
+
+    static reject(reason) {
+        return new Promise((resolve, reject) => {
+            reject(reason);
+        })
     }
 }
 
@@ -202,4 +223,4 @@ Promise.defer = Promise.deferred = function () {
 }
 
 //commonJS规范，模�
-module.exports=Promise;
+module.exports = Promise;
