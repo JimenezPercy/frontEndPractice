@@ -3,6 +3,20 @@ const FULFILLED = 'FULFILLED';//成功态
 const REJECTED = 'REJECTED';//失败态
 
 /**
+ * 判断值是否是promise实例
+ * @param value
+ * @returns {boolean}
+ */
+function isPromise(value) {
+    if (typeof value === 'object' && value !== null || typeof value === 'function') {
+        if (typeof value.then === 'function') {
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
  * 解析Promise
  * @param promise then返回promise
  * @param x 回调返回值
@@ -195,8 +209,10 @@ class Promise {
         let P = this.constructor;
 
         return this.then(
-            v => P.resolve(callback(v)).then(() => v),
-            r => P.resolve(callback(r)).then(() => {throw r})
+            v => P.resolve(callback()).then(() => v),
+            r => P.resolve(callback()).then(() => {
+                throw r
+            })
         );
     }
 
@@ -210,6 +226,33 @@ class Promise {
         return new Promise((resolve, reject) => {
             reject(reason);
         })
+    }
+
+    static all(promises) {
+        return new Promise((resolve, reject) => {
+            let arr = [];
+            for (let i = 0; i < promises.length; i++) {
+                let value = promises[i];
+
+                let index=0;
+                let processData = (i, y) => {
+                    arr[i] = y;
+                    if (++index === promises.length) {
+                        resolve(arr);
+                    }
+                };
+                //如果值是promise实例
+                if (isPromise(value)) {
+                    value.then(function (y) {
+                        processData(i, y);
+                        //有一个失败就将状态改为失败
+                    }, reject);
+                } else {
+                    //如果值为普通值
+                    processData(i, value);
+                }
+            }
+        });
     }
 }
 
