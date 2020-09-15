@@ -1,4 +1,4 @@
-// const Promise=require('./Promise');
+const Promise=require('./Promise');
 let p = new Promise((resolve, reject) => {
     reject();
 }).then(()=>{
@@ -6,14 +6,13 @@ let p = new Promise((resolve, reject) => {
   //   reject(123);
   // })
 },()=>{
-    // return 10;
-    throw 10;
-    // return new Promise((resolve,reject)=>{
-    //     reject(123);
-    //     return 10;
-    // })
+    return new Promise((resolve,reject)=>{
+        resolve(new Promise((resolve,reject)=>{
+          resolve("sadasds")
+        }));
+    })
 }).finally((d)=>{
-  console.log('catch',d);
+  console.log('finally',d);
 }).then((d)=>{
     console.log("success2",d)
 },(e)=>{
