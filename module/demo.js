@@ -2,9 +2,6 @@ const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
 
-// const a = require('./a');
-req('./a.js')
-
 function Module(id) {
     this.id = id;
     this.exports = {};
@@ -51,3 +48,5 @@ function req(filename) {
     filename = Module._resolveFilename(filename);
     console.log(filename);
 }
+
+req('./a')
