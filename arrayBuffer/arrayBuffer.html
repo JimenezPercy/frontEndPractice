@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    /**
+     *  字符串转arrayBuffer
+     *  @param str 字符串
+     *  @returns {buf}
+     */
+    function stringToArrayBuffer(str) {
+        //一个字符占两个字节
+        let buffer = new ArrayBuffer(str.length * 2);
+        //创建视图
+        let view = new Uint16Array(buffer);
+        for (let i = 0; i < str.length; i++) {
+            view[i] = str.charCodeAt(i);
+        }
+        return buffer;
+    }
+
+    /**
+     * arrayBuffer转字符串
+     * @param buf 缓冲区
+     * @returns {string}
+     */
+    function arrayBufferToString(buf) {
+        return String.fromCharCode(...new Uint16Array(buf));
+    }
+
+    console.log(stringToArrayBuffer('中国'));
+    console.log(arrayBufferToString(stringToArrayBuffer('中国')))
+    console.log("============================================")
+
+    function request(url, method = 'get') {
+        return new Promise((resolve, reject) => {
+            let xhr = new XMLHttpRequest();
+            xhr.open(method, url, true);
+            xhr.responseType = 'arraybuffer';
+            xhr.onload = function () {
+                resolve(xhr.response);
+            }
+            xhr.send();
+
+        });
+    }
+
+    request('/download').then(arrayBuffer => {
+        let b = new Blob([arrayBuffer]);
+        let blobUrl = URL.createObjectURL(b);
+        let a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = 'a.js';
+    })
+</script>
+</body>
+</html>
