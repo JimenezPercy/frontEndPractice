@@ -5,19 +5,57 @@
     <title>Title</title>
 </head>
 <body>
+<!--<form action="http://localhost:8888/get">-->
+<p>
+    <input type="text" name="uname" id="uname">
+</p>
+<p>
+    <input type="text" name="gae" id="age">
+</p>
+<p>
+    <input type="button" value="提交" id="btn">
+</p>
+<!--    <p>-->
+<!--        <input type="submit" value="提交" id="btn">-->
+<!--    </p>-->
+<!--</form>-->
 <script>
-    //创建Ajax对象
-    let xhr = new XMLHttpRequest();
-    //配置Ajax对象
-    xhr.open('get', 'http://localhost:8888/resData');//get请求，第二个参数为请求地址
-    //发送请求
-    xhr.send();
-    //获取服务器返回的数据
-    xhr.onload = function () {
-        console.log(xhr.response);
-        let obj = JSON.parse(xhr.response);
-        console.log(obj.name);
+    //获取相关元素
+    let btn = document.querySelector('#btn');
+    let uname = document.querySelector('#uname');
+    let age = document.querySelector('#age');
+    //给按钮绑定单机事件
+    btn.onclick = function () {
+        //创建Ajax对象
+        let xhr = new XMLHttpRequest();
+        //配置Ajax对象
+        //get请求
+        // xhr.open('get', `http://localhost:8888/get?uname=${uname.value}&age=${age.value}`);//get请求，第二个参数为请求地址
+        xhr.open('post', `http://localhost:8888/post`);
+        //对于post请求,必须设置请求参数格式类型
+        xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+        //发送请求
+        //get请求格式
+        // xhr.send();
+        //post请求格式
+        xhr.send(`uname=${uname.value}&age=${age.value}`);
+        //获取服务器返回的数据
+        // xhr.onload = function () {
+        //     // console.log(xhr.response);
+        //     // let obj = JSON.parse(xhr.response);
+        //     // console.log(obj.name);
+        //     console.log(xhr.response);
+        //     console.log(xhr.readyState);
+        // }
+
+        xhr.onreadystatechange=function () {
+            if(xhr.readyState===4){
+                console.log(xhr.readyState);
+                console.log(xhr.status);
+            }
+        }
     }
+
 </script>
 </body>
 </html>
