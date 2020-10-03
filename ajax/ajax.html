@@ -5,6 +5,19 @@
     <title>Title</title>
 </head>
 <body>
-
+<script>
+    //创建Ajax对象
+    let xhr = new XMLHttpRequest();
+    //配置Ajax对象
+    xhr.open('get', 'http://localhost:8888/resData');//get请求，第二个参数为请求地址
+    //发送请求
+    xhr.send();
+    //获取服务器返回的数据
+    xhr.onload = function () {
+        console.log(xhr.response);
+        let obj = JSON.parse(xhr.response);
+        console.log(obj.name);
+    }
+</script>
 </body>
 </html>
