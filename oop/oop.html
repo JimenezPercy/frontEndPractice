@@ -51,6 +51,7 @@ Function.prototype.apply = function (context, args) {
   let r = eval('context.fun(...args)')
   delete context.fun;
   return r;
+
 }
 // test.apply(obj, [1, 2])
 //================================APPLY END==============================================
