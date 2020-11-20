@@ -6,26 +6,103 @@
 </head>
 <body>
 <script>
-class Student {
+// class Student {
+//
+//   constructor(name, age) {
+//     this.name = name;
+//     this.age = age;
+//     this.hobbies = [];
+//   }
+//
+//   set hobby(hobby) {
+//     this.hobbies.push(hobby);
+//   }
+//
+//   get hobby() {
+//     return this.hobbies;
+//   }
+// }
+//
+// const student=new Student("www",23);
+// student.hobby=123;
+// console.log(student.hobby);
+// console.log(student.hobbies);
+// console.log(student.__proto__.hasOwnProperty('hobby'));
 
-  constructor(name, age) {
-    this.name = name;
-    this.age = age;
-    this.hobbies = [];
+//===================================原理=======================================
+/**
+ * 定义属性
+ * @param Constructor 构造函数
+ * @param protoProps 原型成员
+ * @param staticProps 静态成员
+ */
+function defineProperty(Constructor, protoProps, staticProps) {
+  //原型成员
+  if (protoProps) {
+    protoProps.forEach(property => {
+      Object.defineProperty(Constructor.prototype, property.key, {
+        enumerable: property.enumerable || false,
+        configurable: property.configurable || true,
+        writable: property.configurable || true,
+        ...property
+      });
+    });
   }
 
-  set hobbies(hobby) {
-    this.hobbies.push(hobby);
-  }
-
-  get hobbies() {
-    return this.hobbies;
+  //静态成员
+  if (staticProps) {
+    staticProps.forEach(property => {
+      Object.defineProperty(Constructor, property.key, {
+        enumerable: property.enumerable || false,
+        configurable: property.configurable || true,
+        writable: property.configurable || true,
+        ...property
+      });
+    });
   }
 }
 
-const student=new Student("www",23);
-student.set(123);
-console.log(student.get());
+var Person = function () {
+  function Person(name, age, fun) {
+    if(!(this instanceof Person)){
+      throw new Error("asdasasasdasd")
+    }
+    //实例属性
+    this.name = name;
+    this.age = age;
+    //成员方法
+    this.fun = fun;
+  }
+
+  defineProperty(Person, [
+    {
+      key: 'eat',
+      value: function () {
+        console.log('people eat!!!');
+      }
+    },
+    {
+      key: 'sleep',
+      value: function () {
+        console.log('people sleep!!!');
+      }
+    }
+  ], [
+    {
+      key: 'jump',
+      value: function () {
+        console.log('people jump!!!');
+      }
+    }
+  ]);
+
+
+  return Person;
+}();
+let p1=Person('a,b');
+// let p = new Person('cb', 23);
+// Person.jump();
+console.log(p1)
 </script>
 </body>
 </html>
