@@ -1,5 +1,5 @@
 //导入
-const Promise=require('./Promise');
+// const Promise=require('./Promise');
 
 const p=new Promise((resolve,reject)=>{
     console.log("test");
@@ -10,13 +10,14 @@ const p=new Promise((resolve,reject)=>{
 });
 
 p.then((data)=>{
-    console.log('success',data);
+    console.log('success1',data);
+    throw 123;
 },(r)=>{
-    console.log('fail',r);
+    console.log('fail1',r);
+}).finally(v=>{
+    console.log('finally',v);
+}).then((data)=>{
+    console.log('success2',data);
+},(e)=>{
+    console.log('fail2',e);
 });
-
-// p.then((data)=>{
-//     console.log('success',data);
-// },()=>{
-//     console.log('fail');
-// });

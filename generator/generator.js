@@ -5,7 +5,7 @@ let fs = require('fs').promises;
 function* read() {
     let fileName = yield fs.readFile('a.txt', 'utf8');
     let bContent = yield fs.readFile(fileName, 'utf8');
-    console.log(bContent);
+    return  bContent;
 }
 
 function co(it) {
