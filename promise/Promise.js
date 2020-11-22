@@ -18,8 +18,8 @@ function isPromise(value) {
 
 /**
  * 解析Promise
- * @param promise then返回promise
- * @param x 回调返回值
+ * @param promise 上一次then返回promise
+ * @param x 上一次then的回调返回值
  * @param resolve promise中的resolve
  * @param reject promise中的reject
  */
