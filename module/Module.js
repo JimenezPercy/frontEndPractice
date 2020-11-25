@@ -57,7 +57,7 @@ Module._extensions = {
         let exports = module.exports;
         let dirname = path.dirname(module.id);
         //重改this指向Module.exports
-        fn.call(Module.exports, exports, req, module, module.id, dirname);
+        fn.call(module.exports, exports, req, module, module.id, dirname);
     },
     '.json'(module) {
         let content = fs.readFileSync(module.id, 'utf8');
