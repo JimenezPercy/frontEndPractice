@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!--<input type="file" id="file">-->
+<script>
+    let str = `
+        <h1>Hello world</h1>
+    `;
+    // blob基于字符串str生成文件类型数据
+    const blob = new Blob([str], {type: 'text/html'});
+    let a = document.createElement('a');
+    a.setAttribute('download', 'x.html');
+    //创建临时链接地址
+    a.href = URL.createObjectURL(blob);
+    a.innerHTML = '下载'
+    //追加到body
+    document.body.appendChild(a);
+    a.click();
+
+    // //FileReader
+    // let file = document.getElementById('file');
+    //
+    // //监听上传
+    // file.addEventListener('change', (e) => {
+    //     let file = e.target.files[0];
+    //     let fileReader = new FileReader();
+    //
+    //     //读取完成添加图片预览
+    //     fileReader.onload = function () {
+    //         let img=document.createElement('img');
+    //         img.src=fileReader.result;
+    //         document.body.appendChild(img);
+    //     }
+    //     //将文件转为base64
+    //     fileReader.readAsDataURL(file);
+    // });
+
+    // let buffer=new ArrayBuffer(6);
+    // console.log(buffer)
+    // let x1=new Uint8Array(buffer)
+    // console.log(x1)
+
+    // let str="中国";
+    // for(let i=0;i<str.length;i++){
+    //     console.log(str.charCodeAt(i))
+    // }
+</script>
+</body>
+</html>

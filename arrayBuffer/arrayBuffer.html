@@ -53,7 +53,10 @@
         let blobUrl = URL.createObjectURL(b);
         let a = document.createElement('a');
         a.href = blobUrl;
-        a.download = 'a.js';
+        a.download = 'a.html';
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(blobUrl);
     })
 </script>
 </body>

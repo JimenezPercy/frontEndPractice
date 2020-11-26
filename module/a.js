@@ -4,3 +4,5 @@ console.log(this)
 console.log(module)
 console.log(12311231)
 // //})
+
+console.log(module.exports===exports)
