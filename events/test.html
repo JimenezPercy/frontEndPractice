@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+class People {
+  constructor(name, age) {
+    this.name = name;
+    this.age = age;
+  }
+
+  eat() {
+    console.log('people eating...');
+  }
+}
+
+// class Student extends People {
+//   constructor(name, age, school) {
+//     super(name, age);
+//     this.school = school;
+//   }
+// }
+
+function Student(name, age, school) {
+  this.name = name;
+  this.age = age;
+  this.school = school;
+}
+
+Object.setPrototypeOf(Student.prototype,People.prototype);
+
+console.log(new Student('zs', 18, '清华'))
+</script>
+</body>
+</html>
