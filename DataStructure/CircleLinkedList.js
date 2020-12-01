@@ -6,8 +6,8 @@ class Node {
     }
 }
 
-//链表类
-class LinkedList {
+//单向循环列表
+class CircleLinkedList {
     constructor() {
         this.size = 0;
         this.head = null;
@@ -46,7 +46,10 @@ class LinkedList {
         //第一个节点
         if (index === 0) {
             let head = this.head;
-            this.head = new Node(element, head);
+            let newHead = new Node(element, head);
+            let last = this.size == 0 ? newHead : this._node(this.size - 1);
+            this.head = newHead;
+            last.next = newHead;
         } else {
             //获取当前索引上一个节点
             let preNode = this._node(index - 1);
@@ -70,9 +73,16 @@ class LinkedList {
         if (index < 0 || index > this.size) {
             throw new Error('越界');
         }
-        //移除第一个节点，改变head指向
+        //移除第一个节点，改变head和末尾元素的next指向
         if (index === 0) {
-            this.head = this.head.next;
+            //只有一个节点，直接删除
+            if (this.size === 1) {
+                this.head = null;
+            }else {
+                let last = this._node(this.size - 1);
+                this.head = this.head.next;
+                last.next = this.head;
+            }
         } else {
             //获取上一个节点
             let preNode = this._node(index - 1);
@@ -86,49 +96,11 @@ class LinkedList {
         this.size = 0;
         this.head = null;
     }
-
-    //递归反转链表
-    recursionReverseList() {
-        function reverse(head) {
-            if (head == null || head.next == null) return head;
-            let newHead = reverse(head.next);
-            head.next.next = head;
-            head.next = null;
-            return newHead;
-        }
-
-        this.head = reverse(this.head);
-        return this.head;
-    }
-
-    //遍历反转链表
-    ergodicReverseList() {
-        //原链表游标
-        let head = this.head;
-        if (head == null || head.next == null) return head;
-        //新链表头
-        let newHead = null;
-        while (head != null) {
-            let temp = head.next;
-            //添加到新链表头部
-            head.next = newHead;
-            newHead = head;
-            //head指向下一个节点
-            head = temp;
-        }
-        this.head = newHead;
-        return newHead;
-    }
 }
 
 
-let ll = new LinkedList();
-ll.add(4);
-ll.add(5);
-ll.add(6);
-ll.add(1, 7);
-ll.set(1, 123)
-// ll.remove(1)
-// ll.clear();
-// console.log(ll.get(1))
-console.log(ll.ergodicReverseList())
+let ll = new CircleLinkedList();
+ll.add(1);
+ll.add(2);
+ll.remove(0)
+console.log(ll)
