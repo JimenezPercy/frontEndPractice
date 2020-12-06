@@ -70,16 +70,25 @@ class LinkedList {
         if (index < 0 || index > this.size) {
             throw new Error('越界');
         }
+        //保存删除节点
+        let node;
         //移除第一个节点，改变head指向
         if (index === 0) {
+            node = this.head;
+            if (!node) {
+                return undefined;
+            }
             this.head = this.head.next;
         } else {
             //获取上一个节点
             let preNode = this._node(index - 1);
+            node = preNode.next;
             preNode.next = preNode.next.next;
         }
         //数量减少
         this.size--;
+        //返回删除节点
+        return node;
     }
 
     clear() {
@@ -122,13 +131,16 @@ class LinkedList {
 }
 
 
-let ll = new LinkedList();
-ll.add(4);
-ll.add(5);
-ll.add(6);
-ll.add(1, 7);
-ll.set(1, 123)
-// ll.remove(1)
-// ll.clear();
-// console.log(ll.get(1))
-console.log(ll.ergodicReverseList())
+// let ll = new LinkedList();
+// ll.add(4);
+// ll.add(5);
+// ll.add(6);
+// ll.add(1, 7);
+// ll.set(1, 123)
+// // ll.remove(1)
+// // ll.clear();
+// // console.log(ll.get(1))
+// console.log(ll.ergodicReverseList())
+
+
+module.exports = LinkedList;

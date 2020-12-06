@@ -1,6 +1,7 @@
 const fs = require('fs');
 const EventEmitter = require('events');
 
+//基于事件发布订阅，继承事件模块
 class ReadStream extends EventEmitter {
     constructor(path, options = {}) {
         super();
@@ -13,6 +14,9 @@ class ReadStream extends EventEmitter {
         this.end = options.end;
         this.highWaterMark = options.highWaterMark || 64 * 1024;
 
+        //默认情况是暂停模式
+        this.following = false;
+
         //每次读取文件的偏移量
         this.pos = this.start;
 
@@ -22,6 +26,7 @@ class ReadStream extends EventEmitter {
         //监听是否绑定data事件
         this.on('newListener', (eventName) => {
             if (eventName === 'data') {
+                this.following = true;
                 //开始读取文件
                 this.read();
             }
@@ -51,14 +56,18 @@ class ReadStream extends EventEmitter {
 
         //拿到fd才可以读取
         let buffer = Buffer.alloc(this.highWaterMark);
-        fs.read(this.fd, buffer, 0, this.highWaterMark, this.pos, (err, bytesRead) => {
+        let howMuchToRead = this.end ? Math.min(this.end - this.pos + 1, this.highWaterMark) : this.highWaterMark;
+        fs.read(this.fd, buffer, 0, howMuchToRead, this.pos, (err, bytesRead) => {
             if (bytesRead) {
                 //触发data事件
                 this.emit('data', buffer.slice(0, bytesRead));
                 //重置偏移量
                 this.pos += bytesRead;
-                //递归
-                this.read();
+                //判断是否暂停
+                if (this.following) {
+                    //递归
+                    this.read();
+                }
             } else {
                 //读取结束触发end
                 this.emit('end');
@@ -72,6 +81,31 @@ class ReadStream extends EventEmitter {
         fs.close(this.fd, () => {
             //关闭文件后触发close事件
             this.emit('close');
+        })
+    }
+
+    pause() {
+        this.following = false;
+        //TODO 读取完毕后，要禁止再次执行read
+    }
+
+    resume() {
+        this.following = true;
+        this.read();
+    }
+
+    pipe(writeStream) {
+        this.on('data', (chunk) => {
+            let flag = writeStream.write(chunk);
+            if(!flag){
+                //暂停
+                this.pause();
+            }
+        })
+
+        writeStream.on('drain',()=>{
+            //恢复读取
+            this.resume();
         })
     }
 }

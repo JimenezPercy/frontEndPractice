@@ -19,8 +19,8 @@ let rs=new ReadStream(path.join(__dirname, 'copya.txt'), {
     mode: 0x666,
     autoClose: true,
     emitClose: true,
-    // start: 0,
-    // end: 10,
+    start: 3,
+    end: 10,
     highWaterMark: 3
 });
 
@@ -31,12 +31,19 @@ rs.on('open', (fd) => {
 })
 
 let arr = [];
+
 //默认情况下是暂停模式，监听data事件后，变为流动模式
 rs.on('data', (buf) => {
     arr.push(buf);
-    // console.log(buf)
+    console.log(buf)
     // console.log(buf.toString())
+    rs.pause();
 });
+
+
+setInterval(()=>{
+    rs.resume();
+},1000)
 
 //文件读取结束触发
 rs.on('end',()=>{
